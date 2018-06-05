@@ -67,7 +67,7 @@ A successful request will downlaod the thumbnail on your computer.
 
 ** Note: All the downloaded files are kept inside `downloaded_images` folder. **
 
-##### Note for Protected routes!
+#### Note for Protected routes!
 
 Protected routes requires authentication to be accessed.
 For this, obtain a JWT from the `\login` with any arbitrary UserName and password and then use this token to get the authorization.
