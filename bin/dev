@@ -1,0 +1,8 @@
+/*** Files for babel transpilation */
+
+require('babel-register')
+require("babel-polyfill")
+require('../app.js')
+require('../services/jsonPatch.js')
+require('../services/download.js')
+require('../services/login.js')
