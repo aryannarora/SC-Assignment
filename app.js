@@ -23,9 +23,9 @@ const log = bunyan.createLogger({
     },
     {
       level: 'error',
-      path: './logs/SC.log'  // log ERROR and above to a file
+      path: './logs/SC.log' // log ERROR and above to a file
     }
-  ] 
+  ]
 })
 
 // serializer for Bunyan logger

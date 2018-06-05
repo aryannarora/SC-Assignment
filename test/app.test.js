@@ -4,6 +4,7 @@ import nock from 'nock'
 require('dotenv').config()
 
 describe('App', () => {
+  const port = process.env.PORT || 3000
   // JWT that is tampered, expired or not signed by the library
   const invalidJWT = `eyJhbGciOiJIUzI1NiIsInR5CI6IkpXVCJ9.eyJ1aWQiOiJ0ZXN0IiwicHdkIjoidGVzdCIsImlhdCI6MTUyODIwMDc5M30.TBLJinTxkm7pT4j0LOrMfoYMbvqF-i3jFtRfem129bA`
 
@@ -13,14 +14,14 @@ describe('App', () => {
   // this block will run before any test is executed.
   before(() => {
     // Mocking requests with nock
-    nock(`http://localhost:${process.env.PORT}`, {
+    nock(`http://localhost:${port}`, {
       reqheaders: {
         'authorization': `bearer ${invalidJWT}`
       }
     }).post((uri) => uri.includes('patchify') || uri.includes('download')).times(2)
       .reply(403)
 
-    nock(`http://localhost:${process.env.PORT}`, {
+    nock(`http://localhost:${port}`, {
       reqheaders: {
         'content-type': `application/x-www-form-urlencoded`
       }
@@ -29,18 +30,18 @@ describe('App', () => {
         token: validJWT
       })
 
-    nock(`http://localhost:${process.env.PORT}`, {
+    nock(`http://localhost:${port}`, {
       reqheaders: {
         'authorization': `bearer ${validJWT}`
       }
     }).post(`/patchify`)
       .reply(200, 'Patch must be an array of operations')
 
-    nock(`http://localhost:${process.env.PORT}`)
+    nock(`http://localhost:${port}`)
       .post((uri) => uri.includes('patchify') || uri.includes('download')).times(2)
       .reply(403)
 
-    nock(`http://localhost:${process.env.PORT}`, {
+    nock(`http://localhost:${port}`, {
       reqheaders: {
         'authorization': `bearer ${validJWT}`
       }
@@ -49,7 +50,7 @@ describe('App', () => {
   })
 
   it('should not allow requests with no jwt | Route: Patchify', async () => {
-    const statusCode = await rp.post(`http://localhost:${process.env.PORT}/patchify`)
+    const statusCode = await rp.post(`http://localhost:${port}/patchify`)
       .catch(e => e.statusCode)
 
     // expect access to be forbidden
@@ -58,7 +59,7 @@ describe('App', () => {
 
   it('should not allow requests with invalid jwt | Route: Patchify', async () => {
     const options = {
-      uri: `http://localhost:${process.env.PORT}/patchify`,
+      uri: `http://localhost:${port}/patchify`,
       headers: {
         'authorization': `bearer ${invalidJWT}`
       },
@@ -73,7 +74,7 @@ describe('App', () => {
 
   it('should allow requests with valid jwt | Route: Patchify', async () => {
     const options = {
-      uri: `http://localhost:${process.env.PORT}/patchify`,
+      uri: `http://localhost:${port}/patchify`,
       headers: {
         'authorization': `bearer ${validJWT}`
       },
@@ -85,7 +86,7 @@ describe('App', () => {
   })
 
   it('should not allow requests with no jwt | Route: Download', async () => {
-    const statusCode = await rp.post(`http://localhost:${process.env.PORT}/download`)
+    const statusCode = await rp.post(`http://localhost:${port}/download`)
       .catch(e => e.statusCode)
 
       // expect access to be forbidden
@@ -94,7 +95,7 @@ describe('App', () => {
 
   it('should not allow requests with invalid jwt | Route: Download', async () => {
     const options = {
-      uri: `http://localhost:${process.env.PORT}/download`,
+      uri: `http://localhost:${port}/download`,
       headers: {
         'authorization': `bearer ${invalidJWT}`
       },
@@ -109,7 +110,7 @@ describe('App', () => {
 
   it('should allow requests with valid jwt | Route: Download', async () => {
     const options = {
-      uri: `http://localhost:${process.env.PORT}/download`,
+      uri: `http://localhost:${port}/download`,
       headers: {
         'authorization': `bearer ${validJWT}`
       },
@@ -122,7 +123,7 @@ describe('App', () => {
 
   it('should return a valid jwt | Route: login', async () => {
     const options = {
-      uri: `http://localhost:${process.env.PORT}/login`,
+      uri: `http://localhost:${port}/login`,
       headers: {
         'content-type': `application/x-www-form-urlencoded`
       },
